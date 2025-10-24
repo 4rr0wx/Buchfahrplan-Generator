@@ -38,6 +38,20 @@ server/
 
 3. Browser öffnen: <http://127.0.0.1:5000>
 
+### Mit Docker
+
+```bash
+docker compose up --build
+```
+
+Der Dienst lauscht standardmäßig auf Port `5000`. Über `PORT=8080 docker compose up` kann der externe Port überschrieben werden.
+
+### Deployment mit Komodo
+
+- Komodo erkennt das Projekt automatisch über die bereitgestellte `Dockerfile`.
+- Setze in Komodo die Umgebungsvariable `PORT` (Standard `5000`), damit der Startbefehl `gunicorn --bind 0.0.0.0:$PORT app:app` den richtigen Port nutzt.
+- Verwende das Compose-Target `app` oder stelle das Image direkt aus dem Dockerfile bereit.
+
 ### Aktuelle Features
 
 - Zwei realitätsnahe Beispielstrecken (ÖBB Westbahn, MVV S3 München)
