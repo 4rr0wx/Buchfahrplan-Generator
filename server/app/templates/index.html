@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buchfahrplan Generator</title>
+    <link rel="stylesheet" href="{{ url_for('pages.static_files', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <header>
+      <h1>Buchfahrplan Generator</h1>
+      <p>Erstelle Fahrpläne im Stil österreichischer und deutscher Buchfahrpläne.</p>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Strecke auswählen</h2>
+        <div class="field">
+          <label for="route-select">Strecke</label>
+          <select id="route-select"></select>
+        </div>
+        <div class="field">
+          <label for="start-time">Startzeit</label>
+          <input type="datetime-local" id="start-time" />
+        </div>
+        <div class="field">
+          <label for="dwell">Aufenthalt pro Halt (Minuten)</label>
+          <input type="number" id="dwell" min="1" max="15" value="2" />
+        </div>
+        <button id="generate-btn">Grundfahrplan generieren</button>
+      </section>
+
+      <section class="panel">
+        <h2>Fahrplan bearbeiten</h2>
+        <div class="table-wrapper">
+          <table id="timetable-table">
+            <thead>
+              <tr>
+                <th>Station</th>
+                <th>Ankunft</th>
+                <th>Abfahrt</th>
+                <th>Gleis</th>
+                <th>Bemerkungen</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button id="save-btn" class="secondary">Fahrplan speichern</button>
+          <button id="download-btn" disabled>PDF herunterladen</button>
+        </div>
+      </section>
+    </main>
+
+    <template id="row-template">
+      <tr>
+        <td class="station"></td>
+        <td><input type="time" class="arrival" /></td>
+        <td><input type="time" class="departure" /></td>
+        <td><input type="text" class="track" placeholder="z.B. 4" /></td>
+        <td><input type="text" class="remarks" placeholder="Optional" /></td>
+      </tr>
+    </template>
+
+    <section class="panel info">
+      <h2>So funktioniert's</h2>
+      <ol>
+        <li>Strecke wählen oder eigene Strecke anlegen (über die API).</li>
+        <li>Startzeit und Aufenthaltszeiten definieren.</li>
+        <li>Grundfahrplan generieren lassen und Zeiten anpassen.</li>
+        <li>Speichern und als PDF exportieren.</li>
+      </ol>
+    </section>
+
+    <script type="module" src="{{ url_for('pages.static_files', filename='js/app.js') }}"></script>
+  </body>
+</html>
