@@ -6,12 +6,19 @@ const saveBtn = document.querySelector("#save-btn");
 const downloadBtn = document.querySelector("#download-btn");
 const tableBody = document.querySelector("#timetable-table tbody");
 const rowTemplate = document.querySelector("#row-template");
+const segmentsTableBody = document.querySelector("#segments-table tbody");
+
+const routesById = new Map();
 
 let currentTimetable = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   startTimeInput.value = defaultStartTime();
   await loadRoutes();
+});
+
+routeSelect.addEventListener("change", () => {
+  renderSegments(routeSelect.value);
 });
 
 generateBtn.addEventListener("click", async () => {
@@ -79,7 +86,9 @@ async function loadRoutes() {
     const response = await fetch("/api/routes");
     const data = await response.json();
     routeSelect.innerHTML = "";
+    routesById.clear();
     data.routes.forEach((route) => {
+      routesById.set(route.id, route);
       const option = document.createElement("option");
       option.value = route.id;
       option.textContent = `${route.name} (${route.country})`;
@@ -87,6 +96,7 @@ async function loadRoutes() {
     });
     if (data.routes[0]) {
       routeSelect.value = data.routes[0].id;
+      renderSegments(routeSelect.value);
     }
   } catch (error) {
     console.error(error);
@@ -137,6 +147,23 @@ function collectEntries() {
   });
 }
 
+function renderSegments(routeId) {
+  segmentsTableBody.innerHTML = "";
+  const route = routesById.get(routeId);
+  if (!route || !route.segments) return;
+  route.segments.forEach((segment) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${Number.parseFloat(segment.km_start).toFixed(1)}</td>
+      <td>${Number.parseFloat(segment.km_end).toFixed(1)}</td>
+      <td>${segment.speed_limit} km/h</td>
+      <td>${formatGradient(segment.gradient)}</td>
+      <td>${segment.note ?? ""}</td>
+    `;
+    segmentsTableBody.append(row);
+  });
+}
+
 function normalizeTime(timeValue, fallbackIso) {
   if (!timeValue) return null;
   const base = fallbackIso ? new Date(fallbackIso) : new Date();
@@ -168,6 +195,12 @@ function toFullIso(localValue) {
 
 function pad(value) {
   return value.toString().padStart(2, "0");
+}
+
+function formatGradient(value) {
+  if (value === null || value === undefined) return "-";
+  if (value === 0) return "0‰";
+  return `${value > 0 ? "+" : ""}${value}‰`;
 }
 
 function toggleActions(enabled) {

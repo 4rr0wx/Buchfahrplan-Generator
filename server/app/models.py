@@ -30,6 +30,7 @@ class Route:
     country: str
     estimated_speed_kmh: int
     stations: List[Station] = field(default_factory=list)
+    segments: List["TrackSegment"] = field(default_factory=list)
 
 
 @dataclass
@@ -90,3 +91,13 @@ def generate_base_timetable(route: Route, start_time: datetime, dwell_minutes: i
 
 def parse_time(value: str) -> datetime:
     return datetime.fromisoformat(value)
+
+
+@dataclass
+class TrackSegment:
+    id: str
+    km_start: float
+    km_end: float
+    speed_limit: int
+    gradient: Optional[int] = None
+    note: Optional[str] = None

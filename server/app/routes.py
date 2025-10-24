@@ -6,7 +6,14 @@ from typing import Any, Dict, List, Optional
 
 from flask import Blueprint, Response, jsonify, render_template, request, send_file
 
-from .models import Route, Station, Timetable, TimetableEntry, generate_base_timetable
+from .models import (
+    Route,
+    Station,
+    Timetable,
+    TimetableEntry,
+    TrackSegment,
+    generate_base_timetable,
+)
 from .pdf import build_timetable_pdf
 from .storage import storage
 
@@ -81,8 +88,11 @@ def download_pdf(timetable_id: str) -> Response:
     timetable = storage.get_timetable(timetable_id)
     if not timetable:
         return jsonify({"error": "Timetable not found"}), 404
+    route = storage.get_route(timetable.route_id)
+    if not route:
+        return jsonify({"error": "Route not found"}), 404
 
-    pdf_bytes = build_timetable_pdf(timetable)
+    pdf_bytes = build_timetable_pdf(timetable, route)
     return send_file(
         io.BytesIO(pdf_bytes),
         mimetype="application/pdf",
@@ -107,6 +117,17 @@ def _route_to_dict(route: Route) -> Dict[str, Any]:
             }
             for station in route.stations
         ],
+        "segments": [
+            {
+                "id": segment.id,
+                "km_start": segment.km_start,
+                "km_end": segment.km_end,
+                "speed_limit": segment.speed_limit,
+                "gradient": segment.gradient,
+                "note": segment.note,
+            }
+            for segment in route.segments
+        ],
     }
 
 
@@ -120,6 +141,17 @@ def _route_from_payload(payload: Dict[str, Any]) -> Route:
         )
         for idx, station in enumerate(payload.get("stations", []), start=1)
     ]
+    segments = [
+        TrackSegment(
+            id=segment.get("id", f"seg-{idx}"),
+            km_start=segment["km_start"],
+            km_end=segment["km_end"],
+            speed_limit=int(segment["speed_limit"]),
+            gradient=segment.get("gradient"),
+            note=segment.get("note"),
+        )
+        for idx, segment in enumerate(payload.get("segments", []), start=1)
+    ]
     return Route(
         id=payload.get("id") or payload["name"].lower().replace(" ", "-"),
         name=payload["name"],
@@ -127,6 +159,7 @@ def _route_from_payload(payload: Dict[str, Any]) -> Route:
         country=payload.get("country", "AT"),
         estimated_speed_kmh=int(payload.get("estimated_speed_kmh", 100)),
         stations=stations,
+        segments=segments,
     )
 
 

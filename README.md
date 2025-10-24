@@ -57,7 +57,8 @@ Der Dienst lauscht standardmäßig auf Port `5000`. Über `PORT=8080 docker comp
 - Zwei realitätsnahe Beispielstrecken (ÖBB Westbahn, MVV S3 München)
 - Automatischer Grundfahrplan basierend auf Streckenkilometern & Durchschnittsgeschwindigkeit
 - Bearbeitung von Ankunft/Abfahrt, Gleis und Bemerkungen im Browser
-- Speichern über JSON-API & Download eines Buchfahrplans als PDF
+- Hinterlegte Streckensegmente mit km-Angaben, Vmax, Steigung/Fall inkl. Darstellung im UI
+- Download eines Buchfahrplans als PDF im klassischen Layout mit Kilometer- und Geschwindigkeitsangaben
 
 ### Ausblick
 
