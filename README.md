@@ -1,6 +1,8 @@
 ## Buchfahrplan Generator
 
+
 Interaktive Web-App zum Erstellen österreichischer/deutscher Buchfahrpläne. Das Backend basiert auf Flask und liefert sowohl ein minimalistisch-modernes UI als auch JSON-APIs, um Strecken, Fahrpläne und PDF-Exporte zu verwalten.
+
 
 ### Struktur
 
