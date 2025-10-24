@@ -58,7 +58,7 @@ Der Dienst lauscht standardmäßig auf Port `5000`. Über `PORT=8080 docker comp
 - Automatischer Grundfahrplan basierend auf Streckenkilometern & Durchschnittsgeschwindigkeit
 - Bearbeitung von Ankunft/Abfahrt, Gleis und Bemerkungen im Browser
 - Hinterlegte Streckensegmente mit km-Angaben, Vmax, Steigung/Fall inkl. Darstellung im UI
-- Download eines Buchfahrplans als PDF im klassischen Layout mit Kilometer- und Geschwindigkeitsangaben
+- Download eines Buchfahrplans als PDF im EBuLa-Stil mit Zeit-/Kilometerdiagramm samt Geschwindigkeitsprofil
 
 ### Ausblick
 
